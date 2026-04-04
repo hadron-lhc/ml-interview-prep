@@ -1,4 +1,3 @@
-import pandas as pd
 from dataset import get_df
 
 """
@@ -17,10 +16,12 @@ Ana     4000   rank 4
 
 def solution(df):
     df = df.copy()
-    df["salary_rank_inside_department"] = df.groupby("department")["salary"].rank(
-        ascending=False
-    )
-    df["top_earner_flag"] = df["salary_rank_inside_department"] == 1
+
+    rank = df.groupby("department")["salary"].rank(method="dense", ascending=False)
+
+    df["salary_rank_inside_department"] = rank
+    df["top_earner_flag"] = rank == 1
+
     return df
 
 
