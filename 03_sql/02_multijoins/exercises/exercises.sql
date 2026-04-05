@@ -104,7 +104,7 @@ FROM departments d
 LEFT JOIN employees e
 ON d.department_id = e.department_id
 
-JOIN projects p
+LEFT JOIN projects p
 ON d.department_id = p.department_id
 
 GROUP BY d.department_name;
