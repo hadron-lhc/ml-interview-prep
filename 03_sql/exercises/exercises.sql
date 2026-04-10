@@ -84,12 +84,12 @@ FILTER
 WITH SalesPerEmployee AS (
 
   SELECT
+    e.id,
     e.name AS employee,
+    d.id AS dept_id,
     d.name AS department,
+
     SUM(o.amount) AS total_sales,
-    AVG(o.amount) OVER (
-      PARTITION BY d.id
-    ) AS dept_avg
 
   FROM orders o
 
@@ -100,21 +100,29 @@ WITH SalesPerEmployee AS (
     ON e.department_id = d.id
 
   GROUP BY
-    d.name,
-    e.name
+    e.id,
+    e.name,
+    d.id,
+    d.name
+),
+
+WithAvg AS(
+
+  SELECT *,
+
+  AVG(total_sales) OVER(
+  PARTITION BY dept_id
+  ) AS dept_avg
+
+  FROM SalesPerEmployee
+
 )
 
-SELECT
-  employee,
-  department,
-  total_sales,
-  dept_avg
+SELECT *
 
-FROM SalesPerEmployee
+FROM WithAvg
 
 WHERE total_sales > dept_avg;
-
-
 
 /*
 PROBLEM 3 — Customer lifetime value ranking
@@ -143,28 +151,32 @@ Skills:
 WITH SpentPerCustomer AS (
 
   SELECT
+    c.id,
     c.name AS customer,
+
     SUM(o.amount) AS total_spent,
-    DENSE_RANK() OVER (
-      ORDER BY o.amount DESC
-    ) AS ranking,
-    PERCENT_RANK() OVER (
-      ORDER BY o.amount DESC
-    ) AS percent_ranking
 
   FROM orders o
+
   JOIN customers c
     ON o.customer_id = c.id
-  GROUP BY c.id
+
+  GROUP BY c.id, c.name
 )
 
 SELECT
   customer,
   total_spent,
-  ranking,
-  percent_ranking
 
-FROM SpentPerCustomer;
+  DENSE_RANK() OVER(
+    ORDER BY total_spent DESC
+  ) AS ranking,
+
+  PERCENT_RANK() OVER(
+    ORDER BY total_spent DESC
+  ) AS percent_ranking
+
+  FROM SpentPerCustomer;
 
 
 /*
