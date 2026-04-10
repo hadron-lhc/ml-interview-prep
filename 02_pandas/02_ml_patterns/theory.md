@@ -6,8 +6,6 @@
 
 Acumulás información en el tiempo.
 
----
-
 ### Operaciones clave
 
 ```python
@@ -17,15 +15,11 @@ cummin()
 cumcount()
 ```
 
----
-
 ### Ejemplo
 
 ```python
 df["running_total"] = df.groupby["user"]("amount").cumsum()
 ```
-
----
 
 ### Uso real ML
 
@@ -36,8 +30,6 @@ total gastado hasta ahora
 número de eventos hasta ahora
 máximo histórico
 ```
-
----
 
 ### Insight
 
@@ -53,23 +45,17 @@ prefix sum aplicado a data.
 
 Comparar con el pasado.
 
----
-
 ### Operación clave
 
 ```python
 shift()
 ```
 
----
-
 #### Ejemplo
 
 ```python
 df["prev_amount"] = df.groupby["user"]("amount").shift(1)
 ```
-
----
 
 #### Derivados importantes
 
@@ -78,8 +64,6 @@ df["diff"] = df["amount"] - df["prev_amount"]
 
 df["pct_change"] = df["amount"] / df["prev_amount"]
 ```
-
----
 
 #### Uso real ML
 
@@ -92,15 +76,11 @@ variación temporal
 tendencias
 ```
 
----
-
 ### SQL equivalente
 
 ```SQL
 LAG(amount)
 ```
-
----
 
 ### Insight
 
@@ -116,23 +96,17 @@ comparación temporal → clave en ML
 
 Mirar una ventana de tamaño fijo.
 
----
-
 ### Operación
 
 ```python
 rolling(window=3)
 ```
 
----
-
 ### Ejemplo
 
 ```python
 df["rolling_mean"] = df.groupby["user"]("amount").rolling(3).mean().reset_index(0, drop=True)
 ```
-
----
 
 ### Uso real ML
 
@@ -143,8 +117,6 @@ promedio últimos 7 días
 suma últimos N eventos
 volatilidad
 ```
-
----
 
 ### Insight
 
@@ -160,8 +132,6 @@ sliding window en data real
 
 Aplicar una operación por grupo, pero mantener el shape.
 
----
-
 ### Diferencia clave
 
 ```python
@@ -169,15 +139,11 @@ groupby().agg() → reduce filas
 groupby().transform() → mantiene filas
 ```
 
----
-
 ### Ejemplo
 
 ```python
 df["user_avg"] = df.groupby["user"]("amount").transform("mean")
 ```
-
----
 
 ### Uso real
 
@@ -186,15 +152,11 @@ normalizar por usuario
 comparar contra promedio del grupo
 ```
 
----
-
 ### Ejemplo entrevista
 
 ```python
 df["above_avg"] = df["amount"] > df["user_avg"]
 ```
-
----
 
 ### SQL equivalente
 
@@ -210,23 +172,17 @@ AVG() OVER(PARTITION BY user)
 
 Ordenar dentro de grupos.
 
----
-
 ### Operación
 
 ```python
 rank()
 ```
 
----
-
 ### Ejemplo
 
 ```python
 df["rank"] = df.groupby["user"]("amount").rank(ascending=False)
 ```
-
----
 
 ### Uso real
 
@@ -235,8 +191,6 @@ top cliente
 top compra
 orden dentro del grupo
 ```
-
----
 
 ### Insight
 
@@ -252,15 +206,11 @@ window functions en Pandas.
 
 Filtrar basado en propiedades del grupo.
 
----
-
 ### Ejemplo
 
 ```python
 df.groupby("user").filter(lambda x: len(x) > 2)
 ```
-
----
 
 ### Uso real
 
@@ -277,23 +227,17 @@ grupos relevantes
 
 Combinar datasets.
 
----
-
 ### Operación
 
 ```python
 pd.merge()
 ```
 
----
-
 ### Ejemplo
 
 ```python
 df = df.merge(users, on="user_id", how="left")
 ```
-
----
 
 ### Uso real
 
@@ -302,8 +246,6 @@ features externas
 lookup tables
 enrichment
 ```
-
----
 
 Insight
 
@@ -317,15 +259,11 @@ Esto es SQL JOIN en Pandas.
 
 Evitar loops.
 
----
-
 ## X Malo
 
 ```python
 df["new"] = df["amount"].apply(lambda x: x*2)
 ```
-
----
 
 ## ✔ Mejor
 
@@ -333,13 +271,9 @@ df["new"] = df["amount"].apply(lambda x: x*2)
 df["new"] = df["amount"]\* 2
 ```
 
----
-
 ## Uso real
 
 Performance.
-
----
 
 ## Regla de oro
 
@@ -357,15 +291,11 @@ fillna()
 dropna()
 ```
 
----
-
 ### Ejemplo
 
 ```python
 df["amount"] = df["amount"].fillna(0)
 ```
-
----
 
 ## Uso real ML
 
@@ -378,8 +308,6 @@ Data cleaning.
 ### Idea
 
 Combinar todo lo anterior.
-
----
 
 ### Ejemplo real
 
@@ -395,8 +323,6 @@ df["rolling_mean"] = df.groupby["user"]("amount").rolling(3).mean().reset_index(
 df["cumsum"] = df.groupby["user"]("amount").cumsum()
 
 ```
-
----
 
 ### Resultado
 
