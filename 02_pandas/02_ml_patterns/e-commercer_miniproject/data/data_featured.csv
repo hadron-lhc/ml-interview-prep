@@ -1,0 +1,11 @@
+user,order_id,date,amount,category,running_total,order_count
+u1,1,2024-01-01,100,electronics,100,0
+u1,2,2024-01-03,50,books,150,0
+u1,3,2024-01-10,200,electronics,350,0
+u2,4,2024-01-01,80,books,80,0
+u2,5,2024-01-02,120,electronics,200,0
+u2,6,2024-01-08,30,books,230,0
+u3,7,2024-01-01,200,electronics,200,0
+u3,8,2024-01-04,150,electronics,350,0
+u3,9,2024-01-06,50,books,400,0
+u3,10,2024-01-07,300,electronics,700,0

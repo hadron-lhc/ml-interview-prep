@@ -18,4 +18,6 @@ df = pd.DataFrame(data, columns=["user", "order_id", "date", "amount", "category
 df["date"] = pd.to_datetime(df["date"])
 
 df = df.sort_values(["user", "date"])
-print(df)
+
+if __name__ == "__main__":
+    print(df)
