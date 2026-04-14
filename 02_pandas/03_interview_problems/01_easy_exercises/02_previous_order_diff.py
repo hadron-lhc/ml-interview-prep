@@ -26,7 +26,7 @@ def featuring(df):
     df = df.copy()
 
     # Ordenar por fecha
-    df["date"] = pd.to_datetime(df["order_date"])
+    df["order_date"] = pd.to_datetime(df["order_date"])
     df = df.sort_values(["user_id", "order_date"]).reset_index(drop=True)
 
     # Agregar columna de diff
