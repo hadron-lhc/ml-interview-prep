@@ -21,8 +21,8 @@ import pandas as pd
 def detect_start_of_churn(df):
     df = df.copy()
 
-    cond = df.groupby("user_id")["timestamp"].diff() > pd.Timedelta(days=30)
-
-    df["is_churn_start"] = cond & (~cond).shift(1)
+    cond = df.groupby("user_id")["timestamp"].diff() >= pd.Timedelta(days=30)
+    prev = cond.groupby(df["user_id"]).shift(1).fillna(False)
+    df["is_churn_start"] = cond & (~prev)
 
     return df

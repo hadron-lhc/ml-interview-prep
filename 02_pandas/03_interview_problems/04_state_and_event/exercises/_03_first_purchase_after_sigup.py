@@ -15,7 +15,7 @@ import pandas as pd
 
 
 def first_purchase(df, users):
-    df_merged = pd.merge(df, users, on="user_id", how="inner")
+    df_merged = pd.merge(df, users, on="user_id", how="left")
 
     after_signup = df_merged[df_merged["timestamp"] > df_merged["signup_date"]]
     first_idx = after_signup.groupby("user_id")["timestamp"].idxmin()
