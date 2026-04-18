@@ -3,6 +3,15 @@
 -- ================================
 -- Calcular days_since_last_order
 
+SELECT
+    user_id,
+    order_date,
+    amount,
+    CAST(
+        julianday(order_date) -
+        julianday(LAG(order_date) OVER (PARTITION BY user_id ORDER BY order_date))
+    AS INTEGER) AS days_since_last_order
+FROM orders;
 
 
 -- ================================
