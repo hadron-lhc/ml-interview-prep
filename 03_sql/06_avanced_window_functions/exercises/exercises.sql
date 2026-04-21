@@ -156,12 +156,3 @@ SELECT
     END AS streak_length
 FROM grp
 ORDER BY user_id, order_date;
-
--- ================================
--- PROBLEMA 6 — Sessionization (HARD)
--- ================================
-
-
--- ================================
--- PROBLEMA 7 — Reactivated Users (HARD)
--- ================================
