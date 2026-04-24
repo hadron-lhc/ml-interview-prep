@@ -159,6 +159,7 @@ Queremos output:
 | user_id | session_id | session_start | session_end | events_in_session |
 */
 
+/*
 WITH base AS (
   SELECT
     user_id,
@@ -205,3 +206,143 @@ SELECT
 FROM sessions
 GROUP BY user_id, session_id
 ORDER BY user_id, session_id;
+
+*/
+
+----------------------------------------------------
+
+/*
+Ejercicio 5 — Churn + Reactivation
+
+Tabla orders(user_id, order_date, amount)
+
+Definición:
+
+Un usuario se considera churned cuando pasan 30+ días sin comprar.
+
+Si luego vuelve a comprar, cuenta como reactivated.
+
+Output:
+| user_id | churn_date | return_date | gap_days |
+
+Para cada período churn seguido de regreso.
+*/
+
+/*
+WITH base AS (
+  SELECT
+    user_id,
+    order_date,
+    LAG(order_date) OVER (
+      PARTITION BY user_id
+      ORDER BY order_date
+    ) AS prev_order_date
+  FROM orders
+),
+gaps AS (
+  SELECT *,
+        CAST((JULIANDAY(order_date) - JULIANDAY(prev_order_date)) AS INTEGER) AS diff_days
+  FROM base
+)
+SELECT
+  user_id,
+  DATE(prev_order_date, '+30 day') AS churn_date,
+  order_date AS return_date,
+  diff_days AS gap_days
+FROM gaps
+WHERE diff_days >= 30
+ORDER BY user_id, churn_date;
+*/
+
+--------------------------------------------------------------------------------------------
+
+/*
+Ejercicio 6 — Current Churned Users
+
+Tabla orders
+
+Queremos usuarios que ya están churned hoy
+(usar última fecha del dataset como referencia).
+
+Definición:
+
+Si desde última compra pasaron 30+ días.
+
+Output:
+
+| user_id | last_order | days_since_last | churned |
+*/
+
+/*
+
+WITH user_last AS (
+  SELECT
+    user_id,
+    MAX(order_date) AS last_order
+  FROM orders
+  GROUP BY user_id
+),
+ref_date AS (
+  SELECT MAX(order_date) AS today
+  FROM orders
+)
+SELECT
+    u.user_id,
+    u.last_order,
+    CAST(JULIANDAY(r.today) - JULIANDAY(u.last_order) AS INTEGER) AS days_since_last,
+    CASE
+        WHEN JULIANDAY(r.today) - JULIANDAY(u.last_order) >= 30 THEN 1
+        ELSE 0
+    END AS churned
+FROM user_last u
+CROSS JOIN ref_date r
+ORDER BY u.user_id;
+*/
+
+-----------------------------------------------------------------------------------
+
+/*
+Ejercicio 7:
+Reactivated Users Count by Month
+
+Usamos:
+orders
+| user_id | order_date | amount |
+
+
+Definición exacta:
+Un usuario cuenta como reactivated si:
+
+order_date - previous_order_date >= 30 días
+
+Es decir:
+
+hubo gap de 30+ días
+esa nueva compra marca el regreso
+
+Output esperado:
+
+month	reactivated_users
+
+Donde:
+
+month = mes de la compra de regreso
+reactivated_users = cantidad de usuarios únicos reactivados ese mes
+*/
+
+WITH base AS (
+  SELECT
+    user_id,
+    order_date,
+    LAG(order_date) OVER (
+      PARTITION BY user_id
+      ORDER BY order_date
+    ) AS prev_order_date
+  FROM orders
+)
+SELECT
+  strftime('%Y-%m', order_date) AS month,
+  COUNT(DISTINCT user_id)
+FROM base
+WHERE JULIANDAY(order_date) - JULIANDAY(prev_order_date) >= 30
+GROUP BY strftime('%Y-%m', order_date);
