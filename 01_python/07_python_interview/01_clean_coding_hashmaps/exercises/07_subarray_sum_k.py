@@ -20,8 +20,8 @@ Porque:
 
 def solution(nums, k):
     count = {0: 1}
-    result = 0
     prefix_sum = 0
+    result = 0
 
     for num in nums:
         prefix_sum += num
